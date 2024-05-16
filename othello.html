@@ -1,0 +1,33 @@
+<html>
+
+<head>
+    <title>Othello AI Player</title>
+    <link rel="stylesheet" href="othelloView.css">
+</head>
+
+<body> 
+  
+    <div class="container">
+        <div class="title">Settings</div>
+        <div class="content">
+          <form action="#">
+            <div class="user-details">
+              <div class="mode-details">
+                <input type="radio" name="mode" id="dot-1" onchange="ResetGamingboard()">
+                <input type="radio" name="mode" id="dot-2" checked onchange="ResetGamingboard()">
+                <input type="radio" name="mode" id="dot-3"onchange="ResetGamingboard()">
+                <span class="mode-title">Mode</span>
+                <div class="category">
+                  <label for="dot-1">
+                    <span class="dot one"></span>
+                    <span class="mode">Human Vs Human</span>
+                  </label>
+                  <label for="dot-2">
+                    <span class="dot two"></span>
+                    <span class="mode">Human Vs Computer</span>
+                  </label>
+                  <label for="dot-3">
+                    <span class="dot three"></span>
+                    <span class="mode">Computer Vs Computer</span>
+                  </label>
+               
