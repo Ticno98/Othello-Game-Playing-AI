@@ -30,4 +30,60 @@
                     <span class="dot three"></span>
                     <span class="mode">Computer Vs Computer</span>
                   </label>
-               
+                </div>
+              </div>
+              <br>
+              <div class="input-box" id="input-box-1">
+                <span class="details">Difficulty level of player Black</span>
+                <input type="number" id="AI1" name="quantity" placeholder="1" min="1" max="8" oninput="ResetGamingboard()">
+              </div>
+              <div class="input-box" id="input-box-2">
+                <span class="details">Difficulty level of player White</span>
+                <input type="number" id="AI2" name="quantity" placeholder="1" min="1" max="8" oninput="ResetGamingboard()" >
+              </div>
+              <div class="input-box" id="input-box-3">
+                <span class="details">Difficulty level of AI</span>
+                <input type="number" id="AI" name="quantity" placeholder="1" min="1" max="5" oninput="ResetGamingboard()" >
+              </div>
+            </div>
+            
+            <div class="buttons">
+              <div class="button">
+                <input type="submit" value="Play" onclick="assign(event)">
+              </div>
+              <div class="button">
+                <input type="reset" value="Reset" onclick="location.reload()" id="button-reset">  
+              </div>
+            </div>
+            
+    
+          </form>
+        </div>
+      </div>
+    <div class="game">
+      <div id="blackBackground"></div>
+      
+    </div>
+    <div id="discLayer"></div>
+      <div id="score">
+        Turn: Black <br>
+        Black: 2 | White: 2 </div>
+      <div id="canMoveLayer"></div>
+    <script  src="othelloController.js"></script>
+
+    
+
+    <div class="popup-message">
+      <p class="message" id="winnerMessage"></p>
+      </div>
+  
+      <div class="Overlay" onclick="showPopupMessage('Please Adjust Setting And Press Play First')">
+        <p id="Overlay-1" ></p>
+        </div>
+
+
+  </body>
+
+</body>
+
+</html>
