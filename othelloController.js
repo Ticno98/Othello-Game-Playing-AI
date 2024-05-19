@@ -450,3 +450,124 @@ function getAffectedDiscs(id, row, column) {
 			}
 		}
 
+//flip the down left
+		couldBeAffected = [];
+		rowIterator = row;
+		columnIterator = column;
+		while (rowIterator < 7 && columnIterator > 0) {
+			rowIterator += 1;
+			columnIterator -= 1;
+			const valueAtSpot = discs[rowIterator][columnIterator];
+			if (valueAtSpot === 0 || valueAtSpot === id) {
+				if (valueAtSpot === id) affectedDiscs = affectedDiscs.concat(couldBeAffected);
+				break;
+			} else {
+				const discLocation = { row: rowIterator, column: columnIterator };
+				couldBeAffected.push(discLocation);
+			}
+		}
+
+		//flip the up right
+		couldBeAffected = [];
+		rowIterator = row;
+		columnIterator = column;
+		while (rowIterator > 0 && columnIterator < 7) {
+			rowIterator -= 1;
+			columnIterator += 1;
+			const valueAtSpot = discs[rowIterator][columnIterator];
+			if (valueAtSpot === 0 || valueAtSpot === id) {
+				if (valueAtSpot === id) affectedDiscs = affectedDiscs.concat(couldBeAffected);
+				break;
+			} else {
+				const discLocation = { row: rowIterator, column: columnIterator };
+				couldBeAffected.push(discLocation);
+			}
+		}
+
+		//flip the up left
+		couldBeAffected = [];
+		rowIterator = row;
+		columnIterator = column;
+		while (rowIterator > 0 && columnIterator > 0) {
+			rowIterator -= 1;
+			columnIterator -= 1;
+			const valueAtSpot = discs[rowIterator][columnIterator];
+			if (valueAtSpot === 0 || valueAtSpot === id) {
+				if (valueAtSpot === id) affectedDiscs = affectedDiscs.concat(couldBeAffected);
+				break;
+			} else {
+				const discLocation = { row: rowIterator, column: columnIterator };
+				couldBeAffected.push(discLocation);
+			}
+		}
+	}
+	return affectedDiscs;
+}
+
+//------------------------------AI----------------------------------------
+
+
+function makeAIMove1() { //white
+	let bestScore = -Infinity;
+	let bestMove;
+	let depth = dynamicDepth();
+
+	for (let row = 0; row < 8; row++) {
+		for (let column = 0; column < 8; column++) {
+			if (discs[row][column] === 0 && canClickSpot(2, row, column)) {
+				let affectedDiscs = getAffectedDiscs(2, row, column);
+				flipDiscs(affectedDiscs);
+				let tempBoard = JSON.parse(JSON.stringify(discs));
+				tempBoard[row][column] = 2;
+				const score = minimax(tempBoard, depth, false);
+				console.log("Score WHite",score);
+				if (score === 'white') bestMove = { row, column };
+				else if (score > bestScore) {
+					bestScore = score;
+					bestMove = { row, column };
+				}
+				// Undo the move
+				tempBoard[row][column] = 0;
+				flipDiscs(affectedDiscs.reverse());
+			}
+		}
+	}
+	console.log("Bestmove white",bestMove);
+	if (bestMove) {
+		let affectedDiscs = getAffectedDiscs(2, bestMove.row, bestMove.column);
+		flipDiscs(affectedDiscs);
+		discs[bestMove.row][bestMove.column] = 2;
+		if (turn === 1 && canMove(2)) turn = 2;
+		else if (turn === 2 && canMove(1)) turn = 1;
+		else if (turn === 1 && !canMove(2)){
+            turn = 1;
+            switch (gameMode) {
+                case 'H2A':
+                    setTimeout(() => makeAIMove1(), 100);
+                    break;
+                case 'A2A':
+                    setTimeout(() => makeAIMove2(), 100);
+                    break;
+                default:
+                    break;
+        }}
+		else if (turn === 2 && !canMove(1)) {
+			turn = 2;
+			switch (gameMode) {
+				case 'H2A':
+					setTimeout(() => makeAIMove1(), 100);
+					break;
+                case 'A2A':
+					setTimeout(() => makeAIMove1(), 100);
+					break;
+				default:
+					break;
+			}
+		}
+
+		drawDiscs();
+		drawCanMoveLayer();
+		reWriteScore();
+		checkWinner();
+	}
+}
