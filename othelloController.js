@@ -201,3 +201,135 @@ function showPopupMessage(winnerName) {
 	turn =1;
 	reWriteScore();
   }
+
+// draw circle showing the places where click is allowed.
+function drawCanMoveLayer() {
+	canMoveLayer.innerHTML = '';
+	for (let row = 0; row < 8; row++) {
+		for (let column = 0; column < 8; column++) {
+			const value = discs[row][column];
+			if (value === 0 && canClickSpot(turn, row, column)) {
+				let discOutline = document.createElement('div');
+				discOutline.style.position = 'absolute';
+				discOutline.style.width = cellWidth - 8;
+				discOutline.style.height = cellWidth - 8;
+				discOutline.style.borderRadius = '50%';
+				discOutline.style.left = (cellWidth + gap) * column + gap + 2;
+				discOutline.style.top = (cellWidth + gap) * row + gap + 2;
+				discOutline.setAttribute('onclick', 'clickedSquare(' + row + ',' + column + ')');
+				if (turn === 1) discOutline.style.border = '2px solid black';
+				else if (turn === 2) discOutline.style.border = '2px solid white';
+				discLayer.appendChild(discOutline);
+			}
+		}
+	}
+}
+
+// for show the Turn && Current Score.
+function reWriteScore() {
+	let ones = 0;
+	let twos = 0;
+	for (let row = 0; row < 8; row++) {
+		for (let column = 0; column < 8; column++) {
+			const value = discs[row][column];
+			if (value === 1) ones += 1;
+			else if (value === 2) twos += 1;
+		}
+	}
+	if (turn === 2) Turn = 'White';
+	else if (turn === 1) Turn = 'Black';
+	scoreLabel.innerHTML = 'Turn: ' + Turn + '<br />' + 'Black: ' + ones + ' | ' + 'White: ' + twos;
+	return [ones, twos];
+}
+
+//----------------------------------------------------------------------
+
+//-------------------------(Controller)---------------------------------
+
+//click on green square && flip discs && finish of Game if all green square is filled.
+function clickedSquare(row, column) {
+	if (discs[row][column] !== 0) {
+		return;
+	}
+	if (canClickSpot(turn, row, column) === true) {
+		let affectedDiscs = getAffectedDiscs(turn, row, column);
+		flipDiscs(affectedDiscs);
+		discs[row][column] = turn;
+		if (turn === 1 && canMove(2)) {
+			turn = 2;
+			switch (gameMode) {
+				case 'H2A':
+					setTimeout(function () {
+						makeAIMove1();
+					}, 100);
+					break;
+                case 'A2A':
+					setTimeout(function () {
+						makeAIMove1();
+					}, 100);
+					break;
+				default:
+					break;
+			}
+		} else if (turn === 1 && !canMove(2))
+        {
+			turn = 1;
+			switch (gameMode) {
+				case 'H2A':
+					setTimeout(function () {
+						makeAIMove1();
+					}, 100);
+					break;
+                case 'A2A':
+					setTimeout(function () {
+						makeAIMove2();
+					}, 100);
+					break;
+				default:
+					break;
+			}
+		}
+		else if (turn === 2 && canMove(1))
+        {
+			turn = 1;
+			switch (gameMode) {
+				case 'H2A':
+					setTimeout(function () {
+						makeAIMove1();
+					}, 100);
+					break;
+                case 'A2A':
+					setTimeout(function () {
+						makeAIMove2();
+					}, 100);
+					break;
+				default:
+					break;
+			}
+		}
+
+		else if (turn === 2 && !canMove(1)) {
+			turn = 2;
+			switch (gameMode) {
+				case 'H2A':
+					setTimeout(function () {
+						makeAIMove1();
+					}, 100);
+					break;
+                case 'A2A':
+					setTimeout(function () {
+						makeAIMove1();
+					}, 100);
+					break;
+				default:
+					break;
+			}
+		}
+
+		drawDiscs();
+		drawCanMoveLayer();
+		reWriteScore();
+		checkWinner();
+	}
+}
+
