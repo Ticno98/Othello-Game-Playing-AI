@@ -100,4 +100,175 @@ form .input-box span.details{
    background: rgb(63, 76, 119);
    border-color: #d9d9d9;
  }
- 
+
+
+
+form input[type="radio"]{
+   display: none;
+ }
+ form .button{
+   height: 45px;
+   width: 48%;
+   margin: 35px 0
+ }
+ form .buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+ }
+ form .button input{
+   height: 100%;
+   width: 100%;
+   border-radius: 5px;
+   border: none;
+   color: #fff;
+   font-size: 22px;
+   font-weight: 500;
+   letter-spacing: 1px;
+   cursor: pointer;
+   transition: all 0.3s ease;
+   background: linear-gradient(112.1deg, rgb(32, 38, 57) 11.4%, rgb(63, 76, 119) 70.2%); }
+ form .button input:hover{
+  /* transform: scale(0.99); */
+  background: linear-gradient(-112.1deg, rgb(32, 38, 57) 11.4%, rgb(63, 76, 119) 70.2%);  }
+ @media(max-width: 584px){
+ .container{
+  max-width: 100%;
+}
+form .user-details .input-box{
+    margin-bottom: 15px;
+    width: 100%;
+  }
+  form .category{
+    width: 100%;
+  }
+  .content form .user-details{
+    max-height: 300px;
+    overflow-y: scroll;
+  }
+  .user-details::-webkit-scrollbar{
+    width: 5px;
+  }
+  }
+  @media(max-width: 459px){
+  .container .content .category{
+    flex-direction: column;
+  }
+}
+
+/*            game               */
+#blackBackground {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: black;
+    height: 546;
+    width: 546;
+}
+
+#score {
+    position: absolute;
+    left: 0;
+    top: 550;
+    width: 550;
+    font-size: 50;
+    
+    color: white;
+    text-align: center;
+
+
+}
+
+/*              Pop-up Massage        */
+
+.popup-message {
+  position: fixed;
+  top: -66px; /* Initial position above the viewport */
+  left: 50%;
+  height: 66px;
+  width: 450px;
+  transform: translateX(-50%);
+  padding: 20px;
+  background-color: #f1f1f1;
+  border-radius: 28px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transition: top 0.7s ease-in-out, opacity 0.7s ease-in-out, visibility 0.7s ease-in-out;
+  z-index: 9999;
+}
+
+.popup-message.show {
+  top: 110px; /* Final position when shown */
+  opacity: 70%;
+  visibility: visible;
+  height: 66px;
+  width: 450px;
+}
+
+.popup-message.hide {
+  top: -66px; /* Position above the viewport when hidden */
+  opacity: 0;
+  visibility: hidden;
+}
+
+.popup-message .message {
+  text-align: center;
+  font-size: 18px;
+  font-weight: normal;
+  color: #000;
+  margin-bottom: 20px;
+}
+
+.Overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: black;
+  height: 546;
+  width: 546;
+  opacity: 0%;
+  cursor: pointer;
+}
+
+ - in Js File , Commit Comment : implementing Functions for drawing Green Squares and Dics on The board
+
+//draw 64 green Square by js DOM.
+function drawGreenSquares() {
+	for (let row = 0; row < 8; row++) {
+		for (let column = 0; column < 8; column++) {
+			let greenSquare = document.createElement('div');
+			greenSquare.style.position = 'absolute';
+			greenSquare.style.width = cellWidth;
+			greenSquare.style.height = cellWidth;
+			greenSquare.style.backgroundColor = 'green';
+			greenSquare.style.left = (cellWidth + gap) * column + gap;
+			greenSquare.style.top = (cellWidth + gap) * row + gap;
+			greenSquare.setAttribute('onclick', 'clickedSquare(' + row + ',' + column + ')');
+			blackBackground.appendChild(greenSquare);
+		}
+	}
+}
+
+//draw discs on board
+function drawDiscs() {
+	discLayer.innerHTML = '';
+	for (let row = 0; row < 8; row++) {
+		for (let column = 0; column < 8; column++) {
+			const value = discs[row][column];
+			if (value !== 0) {
+				let disc = document.createElement('div');
+				disc.style.position = 'absolute';
+				disc.style.width = cellWidth - 2;
+				disc.style.height = cellWidth - 2;
+				disc.style.borderRadius = '50%';
+				disc.style.left = (cellWidth + gap) * column + gap + 1;
+				disc.style.top = (cellWidth + gap) * row + gap + 1;
+				if (value === 1) disc.style.backgroundColor = 'black';
+				if (value === 2) disc.style.backgroundColor = 'white';
+				discLayer.appendChild(disc);
+			}
+		}
+	}
+} 
+
