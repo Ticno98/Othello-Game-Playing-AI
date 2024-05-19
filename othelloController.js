@@ -571,3 +571,133 @@ function makeAIMove1() { //white
 		checkWinner();
 	}
 }
+
+function makeAIMove2() { // black
+	let bestScore = -Infinity;
+	let bestMove;
+	let depth = globalDepth1;
+
+	for (let row = 0; row < 8; row++) {
+		for (let column = 0; column < 8; column++) {
+			if (discs[row][column] === 0 && canClickSpot(1, row, column)) {
+				let affectedDiscs = getAffectedDiscs(1, row, column);
+				flipDiscs(affectedDiscs);
+				let tempBoard = JSON.parse(JSON.stringify(discs));
+				tempBoard[row][column] = 1;
+				const score = minimax(tempBoard, depth, false);
+				
+				if (score === 'black') bestMove = { row, column };
+				else if (score > bestScore) {
+					bestScore = score;
+					bestMove = { row, column };
+				}
+				// Undo the move
+				tempBoard[row][column] = 0;
+				flipDiscs(affectedDiscs.reverse());
+			}
+		}
+	}
+
+	if (bestMove) {
+		let affectedDiscs = getAffectedDiscs(1, bestMove.row, bestMove.column);
+		flipDiscs(affectedDiscs);
+		discs[bestMove.row][bestMove.column] = 1;
+		if (turn === 1 && canMove(2)) turn = 2;
+		else if (turn === 2 && canMove(1)) turn = 1;
+		else if (turn === 1 && !canMove(2)) {
+           turn = 1; 
+			switch (gameMode) {
+				case 'A2A':
+					setTimeout(() => makeAIMove2(), 100);
+					break;
+                case 'H2A':
+                    setTimeout(() => makeAIMove1(), 100);
+                    break;
+				default:
+					break;
+			}
+        }
+		else if (turn === 2 && !canMove(1)) {
+			turn = 2;
+			switch (gameMode) {
+				case 'H2A':
+					setTimeout(() => makeAIMove1(), 100);
+					break;
+                case 'A2A':
+                    setTimeout(() => makeAIMove1(), 100);
+                    break;
+				default:
+					break;
+			}
+		}
+
+		drawDiscs();
+		drawCanMoveLayer();
+		reWriteScore();
+		checkWinner();
+	}
+}
+
+
+function minimax(board, depth, maximizingPlayer) {
+	const result = checkWinner();
+	if (depth === 0 || result !== 1) return result;
+	if (maximizingPlayer) {
+		let bestScore = -Infinity;
+		for (let row = 0; row < 8; row++) {
+			for (let column = 0; column < 8; column++) {
+				if (board[row][column] === 0 && canClickSpot(2, row, column)) {
+					let affectedDiscs = getAffectedDiscs(2, row, column);
+					flipDiscs(affectedDiscs);
+					let tempBoard = JSON.parse(JSON.stringify(board));
+					tempBoard[row][column] = 2;
+					const score = minimax(tempBoard, depth - 1, false);
+					bestScore = Math.max(bestScore, score);
+					// Undo the move
+					tempBoard[row][column] = 0;
+					flipDiscs(affectedDiscs.reverse());
+				}
+			}
+		}
+		return bestScore;
+	} else {
+		let bestScore = Infinity;
+		for (let row = 0; row < 8; row++) {
+			for (let column = 0; column < 8; column++) {
+				if (board[row][column] === 0 && canClickSpot(1, row, column)) {
+					let tempBoard = JSON.parse(JSON.stringify(board));
+					let affectedDiscs = getAffectedDiscs(1, row, column);
+					flipDiscs(affectedDiscs);
+					tempBoard = JSON.parse(JSON.stringify(board));
+					tempBoard[row][column] = 1;
+					const score = minimax(tempBoard, depth - 1, true);
+					bestScore = Math.min(bestScore, score);
+					// Undo the move
+					tempBoard[row][column] = 0;
+					flipDiscs(affectedDiscs.reverse());
+				}
+			}
+		}
+		return bestScore;
+	}
+}
+function dynamicDepth(){
+	let moves=0;
+	let depth = (globalDepth || globalDepth2);
+	if(depth>=4)
+	{
+		for (let row = 0; row < 8; row++) {
+			for (let column = 0; column < 8; column++) {
+				if (discs[row][column] === 0 && canClickSpot(2, row, column))
+					moves=moves+1;
+			}
+		}
+		if(moves >=5 && moves <8)
+			depth=depth-1;
+		if(moves>=8)
+			depth=depth-2;
+	
+	}
+	return depth;
+	
+}
