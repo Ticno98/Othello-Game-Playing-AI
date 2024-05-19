@@ -115,3 +115,89 @@ function Overlayhide() { //hides the overlay that prevent the user to click on t
 	var overlay = document.querySelector('.Overlay');
 	overlay.style.display = 'block';
 	  }
+async function assign(event){
+	event.preventDefault();
+	Overlayhide();
+	AIInput = document.getElementById('AI');  // level human vs AI          
+    AIInput1 = document.getElementById('AI1');// level AI1
+    AIInput2 = document.getElementById('AI2');// level AI2
+	
+	if(AIInput.value == "")
+	AIInput.value =1;
+	if(AIInput1.value == "")
+	AIInput1.value =1;
+	if(AIInput2.value == "")
+	AIInput2.value =1;
+
+	console.log("asdas",AIInput.value);
+    if (dot1.checked) gameMode='H2H';
+    if (dot2.checked){
+        gameMode='H2A';
+        globalDepth=AIInput.value;
+    } 
+    if (dot3.checked){
+        gameMode='A2A';
+        globalDepth1=AIInput1.value;
+        globalDepth2=AIInput2.value;
+    } 
+		if(gameMode=="A2A")
+		{
+			[b,w]=reWriteScore();
+			let i=1;
+			showPopupMessage("The Code is delayed by 1 sec ,To See Turns")
+			while(b+w != 64)
+			{
+				(function() {
+				
+					if(canMove(1) ||canMove(2))
+					{
+						if(canMove(1))
+								{makeAIMove2();console.log("Entered turn =%d canMove(1)=%d",turn,canMove(1))}
+						if(canMove(2))
+							{makeAIMove1(); console.log("Entered turn =%d canMove(2)=%d",turn,canMove(2))}
+						console.log("Entered");
+					}
+				  })();
+				console.log("iteration",i);
+				 await delay(1000);
+				 [b,w]=reWriteScore();
+				 i++;
+			}
+
+		}
+
+}
+
+function delay(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+function showPopupMessage(winnerName) {
+	var popupMessage = document.querySelector('.popup-message');
+	var winnerMessage = document.querySelector('#winnerMessage');
+	winnerMessage.textContent = winnerName;
+	popupMessage.classList.add('show');
+
+	setTimeout(function() {
+	  popupMessage.classList.remove('show');
+   }, 2000); // Hide the popup message after 4 seconds 
+  }
+  function ResetGamingboard() {
+	
+	discs = [
+		[0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 2, 1, 0, 0, 0],
+		[0, 0, 0, 1, 2, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0]
+	];
+	drawGreenSquares();
+	drawDiscs();
+	drawCanMoveLayer();
+	Overlayshow();
+	turn =1;
+	reWriteScore();
+  }
