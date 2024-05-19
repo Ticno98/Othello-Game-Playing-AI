@@ -333,3 +333,120 @@ function clickedSquare(row, column) {
 	}
 }
 
+function checkWinner() {
+	//  2: black winner,  -2: white winner,  0: Tie,  1: No winner
+	const [black, white] = reWriteScore();
+	if (black + white === 64) {
+		const winner = black > white ? 'black' : black < white ? 'white' : 'tie';
+		showPopupMessage("Gameover , The Winner is "+winner);
+		return winner;
+	}
+	return 1;
+}
+// can click on green square or no
+function canMove(id) {
+	for (let row = 0; row < 8; row++)
+		for (let column = 0; column < 8; column++) if (canClickSpot(id, row, column)) return true;
+	return false;
+}
+
+// Decide if a cell is clickable
+function canClickSpot(id, row, column) {
+	
+	let affectedDiscs = getAffectedDiscs(id, row, column);
+	if (affectedDiscs.length === 0) return false;
+	else return true;
+	
+}
+
+//flip discs from black to white && white to black
+function flipDiscs(affectedDiscs) {
+	for (let i = 0; i < affectedDiscs.length; i++) {
+		const spot = affectedDiscs[i];
+		if (discs[spot.row][spot.column] === 1) discs[spot.row][spot.column] = 2;
+		else discs[spot.row][spot.column] = 1;
+	}
+}
+
+//get all discs can flipped by click on any gree square.
+function getAffectedDiscs(id, row, column) {
+	let affectedDiscs = [];
+	if (discs[row][column] === 0) {
+		//flip the right
+		let couldBeAffected = [];
+		let columnIterator = column;
+		let rowIterator = row;
+		while (columnIterator < 7) {
+			columnIterator += 1;
+			const valueAtSpot = discs[row][columnIterator];
+			if (valueAtSpot === 0 || valueAtSpot === id) {
+				if (valueAtSpot === id) affectedDiscs = affectedDiscs.concat(couldBeAffected);
+				break;
+			} else {
+				const discLocation = { row: row, column: columnIterator };
+				couldBeAffected.push(discLocation);
+			}
+		}
+
+		//flip the left
+		couldBeAffected = [];
+		columnIterator = column;
+		while (columnIterator > 0) {
+			columnIterator -= 1;
+			const valueAtSpot = discs[row][columnIterator];
+			if (valueAtSpot === 0 || valueAtSpot === id) {
+				if (valueAtSpot === id) affectedDiscs = affectedDiscs.concat(couldBeAffected);
+				break;
+			} else {
+				const discLocation = { row: row, column: columnIterator };
+				couldBeAffected.push(discLocation);
+			}
+		}
+
+		//flip the up
+		couldBeAffected = [];
+		rowIterator = row;
+		while (rowIterator > 0) {
+			rowIterator -= 1;
+			const valueAtSpot = discs[rowIterator][column];
+			if (valueAtSpot === 0 || valueAtSpot === id) {
+				if (valueAtSpot === id) affectedDiscs = affectedDiscs.concat(couldBeAffected);
+				break;
+			} else {
+				const discLocation = { row: rowIterator, column: column };
+				couldBeAffected.push(discLocation);
+			}
+		}
+
+		//flip the down
+		couldBeAffected = [];
+		rowIterator = row;
+		while (rowIterator < 7) {
+			rowIterator += 1;
+			const valueAtSpot = discs[rowIterator][column];
+			if (valueAtSpot === 0 || valueAtSpot === id) {
+				if (valueAtSpot === id) affectedDiscs = affectedDiscs.concat(couldBeAffected);
+				break;
+			} else {
+				const discLocation = { row: rowIterator, column: column };
+				couldBeAffected.push(discLocation);
+			}
+		}
+
+		//flip the down right
+		couldBeAffected = [];
+		rowIterator = row;
+		columnIterator = column;
+		while (rowIterator < 7 && columnIterator < 7) {
+			rowIterator += 1;
+			columnIterator += 1;
+			const valueAtSpot = discs[rowIterator][columnIterator];
+			if (valueAtSpot === 0 || valueAtSpot === id) {
+				if (valueAtSpot === id) affectedDiscs = affectedDiscs.concat(couldBeAffected);
+				break;
+			} else {
+				const discLocation = { row: rowIterator, column: columnIterator };
+				couldBeAffected.push(discLocation);
+			}
+		}
+
