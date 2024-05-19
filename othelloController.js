@@ -115,6 +115,7 @@ function Overlayhide() { //hides the overlay that prevent the user to click on t
 	var overlay = document.querySelector('.Overlay');
 	overlay.style.display = 'block';
 	  }
+
 async function assign(event){
 	event.preventDefault();
 	Overlayhide();
@@ -202,6 +203,45 @@ function showPopupMessage(winnerName) {
 	reWriteScore();
   }
 
+//draw 64 green Square by js DOM.
+function drawGreenSquares() {
+	for (let row = 0; row < 8; row++) {
+		for (let column = 0; column < 8; column++) {
+			let greenSquare = document.createElement('div');
+			greenSquare.style.position = 'absolute';
+			greenSquare.style.width = cellWidth;
+			greenSquare.style.height = cellWidth;
+			greenSquare.style.backgroundColor = 'green';
+			greenSquare.style.left = (cellWidth + gap) * column + gap;
+			greenSquare.style.top = (cellWidth + gap) * row + gap;
+			greenSquare.setAttribute('onclick', 'clickedSquare(' + row + ',' + column + ')');
+			blackBackground.appendChild(greenSquare);
+		}
+	}
+}
+
+//draw discs on board
+function drawDiscs() {
+	discLayer.innerHTML = '';
+	for (let row = 0; row < 8; row++) {
+		for (let column = 0; column < 8; column++) {
+			const value = discs[row][column];
+			if (value !== 0) {
+				let disc = document.createElement('div');
+				disc.style.position = 'absolute';
+				disc.style.width = cellWidth - 2;
+				disc.style.height = cellWidth - 2;
+				disc.style.borderRadius = '50%';
+				disc.style.left = (cellWidth + gap) * column + gap + 1;
+				disc.style.top = (cellWidth + gap) * row + gap + 1;
+				if (value === 1) disc.style.backgroundColor = 'black';
+				if (value === 2) disc.style.backgroundColor = 'white';
+				discLayer.appendChild(disc);
+			}
+		}
+	}
+}
+
 // draw circle showing the places where click is allowed.
 function drawCanMoveLayer() {
 	canMoveLayer.innerHTML = '';
@@ -245,6 +285,17 @@ function reWriteScore() {
 //----------------------------------------------------------------------
 
 //-------------------------(Controller)---------------------------------
+
+function checkWinner() {
+	//  2: black winner,  -2: white winner,  0: Tie,  1: No winner
+	const [black, white] = reWriteScore();
+	if (black + white === 64) {
+		const winner = black > white ? 'black' : black < white ? 'white' : 'tie';
+		showPopupMessage("Gameover , The Winner is "+winner);
+		return winner;
+	}
+	return 1;
+}
 
 //click on green square && flip discs && finish of Game if all green square is filled.
 function clickedSquare(row, column) {
@@ -333,16 +384,6 @@ function clickedSquare(row, column) {
 	}
 }
 
-function checkWinner() {
-	//  2: black winner,  -2: white winner,  0: Tie,  1: No winner
-	const [black, white] = reWriteScore();
-	if (black + white === 64) {
-		const winner = black > white ? 'black' : black < white ? 'white' : 'tie';
-		showPopupMessage("Gameover , The Winner is "+winner);
-		return winner;
-	}
-	return 1;
-}
 // can click on green square or no
 function canMove(id) {
 	for (let row = 0; row < 8; row++)
@@ -450,7 +491,7 @@ function getAffectedDiscs(id, row, column) {
 			}
 		}
 
-//flip the down left
+		//flip the down left
 		couldBeAffected = [];
 		rowIterator = row;
 		columnIterator = column;
@@ -571,7 +612,6 @@ function makeAIMove1() { //white
 		checkWinner();
 	}
 }
-
 function makeAIMove2() { // black
 	let bestScore = -Infinity;
 	let bestMove;
@@ -698,45 +738,6 @@ function dynamicDepth(){
 			depth=depth-2;
 	
 	}
-//draw 64 green Square by js DOM.
-function drawGreenSquares() {
-	for (let row = 0; row < 8; row++) {
-		for (let column = 0; column < 8; column++) {
-			let greenSquare = document.createElement('div');
-			greenSquare.style.position = 'absolute';
-			greenSquare.style.width = cellWidth;
-			greenSquare.style.height = cellWidth;
-			greenSquare.style.backgroundColor = 'green';
-			greenSquare.style.left = (cellWidth + gap) * column + gap;
-			greenSquare.style.top = (cellWidth + gap) * row + gap;
-			greenSquare.setAttribute('onclick', 'clickedSquare(' + row + ',' + column + ')');
-			blackBackground.appendChild(greenSquare);
-		}
-	}
-}
-
-//draw discs on board
-function drawDiscs() {
-	discLayer.innerHTML = '';
-	for (let row = 0; row < 8; row++) {
-		for (let column = 0; column < 8; column++) {
-			const value = discs[row][column];
-			if (value !== 0) {
-				let disc = document.createElement('div');
-				disc.style.position = 'absolute';
-				disc.style.width = cellWidth - 2;
-				disc.style.height = cellWidth - 2;
-				disc.style.borderRadius = '50%';
-				disc.style.left = (cellWidth + gap) * column + gap + 1;
-				disc.style.top = (cellWidth + gap) * row + gap + 1;
-				if (value === 1) disc.style.backgroundColor = 'black';
-				if (value === 2) disc.style.backgroundColor = 'white';
-				discLayer.appendChild(disc);
-			}
-		}
-	}
-} 
-
 	return depth;
 	
 }
