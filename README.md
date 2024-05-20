@@ -50,7 +50,7 @@ High Difficulty
   <img src="https://i.ibb.co/NVHsFrw/Human-Vs-Ai-high-diffculty.png" alt="Game Panel">
 </p>
 
-* [**Demo Link**](https://www.youtube.com/)
+* [**Demo Link**](https://youtu.be/msPKNPJ48A4)
 
 ## How To Run The Game
 
